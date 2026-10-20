@@ -248,6 +248,54 @@ html[data-theme="dark"] .btn.primary:hover{background:#35b2f0}
 .viewer.open{display:flex}
 .viewer img{max-width:94vw;max-height:92vh;border-radius:var(--radius);box-shadow:0 24px 80px rgba(0,0,0,.6)}
 
+/* ---------- Carousel ---------- */
+.carousel{position:relative;border-radius:var(--radius);overflow:hidden;border:1px solid var(--border);background:var(--img-bg)}
+.car-track{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none}
+.car-track::-webkit-scrollbar{display:none}
+.car-slide{flex:0 0 100%;scroll-snap-align:center}
+.car-slide img{width:100%;aspect-ratio:16/9;object-fit:cover;display:block;cursor:zoom-in}
+.car-btn{
+  position:absolute;top:50%;transform:translateY(-50%);width:38px;height:38px;border-radius:50%;
+  border:1px solid rgba(255,255,255,.4);background:rgba(0,0,0,.45);color:#fff;font-size:15px;cursor:pointer;
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);transition:background .12s;
+}
+.car-btn:hover{background:rgba(0,0,0,.68)}
+.car-btn.l{left:10px}.car-btn.r{right:10px}
+.car-ind{
+  position:absolute;right:12px;bottom:10px;background:rgba(0,0,0,.55);color:#fff;
+  padding:2px 10px;border-radius:10px;font-size:11.5px;pointer-events:none;
+}
+.d-sub img.active{outline:2px solid var(--accent);outline-offset:1px}
+
+/* ---------- Bing view ---------- */
+.grid>*:is(.bing-hero,.bing-sec-label,.bing-strip,.bing-bar){grid-column:1/-1}
+.bing-hero{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;backdrop-filter:blur(20px)}
+.bing-hero>img{width:100%;aspect-ratio:16/9;object-fit:cover;display:block;background:var(--img-bg);cursor:zoom-in}
+.bing-meta{padding:14px 18px 4px}
+.bing-meta h3{font-family:var(--font-display);font-size:16px;font-weight:650}
+.bing-meta p{font-size:12.5px;color:var(--text-2);margin-top:4px}
+.bing-actions{display:flex;gap:10px;padding:10px 18px 16px}
+.bing-sec-label{font-size:11px;font-weight:600;color:var(--text-3);letter-spacing:1px;margin-top:16px}
+.bing-strip{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-top:10px}
+.bing-strip img{
+  width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:6px;border:1px solid var(--border);
+  cursor:pointer;background:var(--img-bg);transition:transform .15s,box-shadow .15s;
+}
+.bing-strip img:hover{transform:scale(1.04);box-shadow:var(--shadow-2)}
+.bing-strip img.active{outline:2px solid var(--accent);outline-offset:1px}
+.bing-bar{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.bing-bar .nav-arrow{width:34px;padding:0;justify-content:center;font-size:13px}
+.bing-bar .cur{font-size:13px;font-weight:600;min-width:118px;text-align:center}
+input.month{
+  height:34px;padding:0 12px;border:1px solid var(--border-strong);border-radius:var(--radius);
+  background:var(--surface-solid);color:var(--text);font-family:var(--font);font-size:12.5px;outline:none;
+}
+input.month:focus{border-color:var(--accent)}
+input.month::-webkit-calendar-picker-indicator{filter:invert(.4);cursor:pointer}
+html[data-theme="dark"] input.month::-webkit-calendar-picker-indicator{filter:invert(.85)}
+.bing-note{font-size:12px;color:var(--text-3);margin-top:2px}
+.bing-date{font-size:11.5px;color:var(--text-3);margin-top:3px}
+
 /* ---------- Anim ---------- */
 .card{animation:rise .4s cubic-bezier(.2,.9,.3,1) backwards}
 @keyframes rise{from{opacity:0;transform:translateY(14px) scale(.98)}to{opacity:1;transform:none}}
@@ -336,6 +384,8 @@ html[data-theme="dark"] .btn.primary:hover{background:#35b2f0}
     <div class="d-body" id="dBody"></div>
     <div class="d-foot">
       <a class="btn primary" id="dStore" target="_blank" rel="noopener" style="text-decoration:none">在 Microsoft Store 查看 ↗</a>
+      <button class="btn" id="dSetWall">设置当前图片为桌面背景</button>
+      <button class="btn" id="dDlAll">下载全部图片</button>
       <button class="btn" id="dCopy">复制主题 ID</button>
     </div>
   </div>
@@ -7847,6 +7897,14 @@ const I18N = {
     noDesc:'暂无描述。', store:'在 Microsoft Store 查看 ↗', copyId:'复制主题 ID',
     copied:id=>`已复制产品 ID：${id}`, copyFail:'复制失败', close:'关闭',
     themeBtn:'切换明暗主题', langBtn:'选择语言',
+    bingCat:'Bing 每日图片', bingSub:'必应每日高清壁纸，可下载或设为桌面背景', bingPrev:'当月图片', today:'今日图片',
+    loading:'加载中…', download:'下载', setWall:'设置为桌面背景', downloadAll:'下载全部图片',
+    setCurrent:'设置当前图片为桌面背景', dlStarted:'开始下载…', dlDone:'已保存到', dlFail:'下载失败',
+    wpDone:'已设置为桌面背景', wpFail:'设置桌面背景失败', bingErr:'无法获取 Bing 每日图片',
+    bingHint:'请在桌面应用中打开以使用此功能',
+    bingArchiveLimit:'官方存档仅保留最近约 16 天，所选月份暂无图片',
+    thisMonth:'本月', prevM:'上一月', nextM:'下一月',
+    ymFmt:(y,m)=>`${y} 年 ${m} 月`,
     sort:['评分最高','评论最多','最新上架','名称 A→Z']
   },
   en:{
@@ -7862,6 +7920,15 @@ const I18N = {
     noDesc:'No description available.', store:'View in Microsoft Store ↗', copyId:'Copy product ID',
     copied:id=>`Copied product ID: ${id}`, copyFail:'Copy failed', close:'Close',
     themeBtn:'Toggle light / dark theme', langBtn:'Select language',
+    bingCat:'Bing Daily', bingSub:'Bing daily wallpapers — download or set as desktop background', bingPrev:'Images this month', today:'Today on Bing',
+    loading:'Loading…', download:'Download', setWall:'Set as desktop background', downloadAll:'Download all images',
+    setCurrent:'Set current image as background', dlStarted:'Downloading…', dlDone:'Saved to', dlFail:'Download failed',
+    wpDone:'Wallpaper set', wpFail:'Failed to set wallpaper', bingErr:'Failed to load Bing daily images',
+    bingHint:'Open this in the desktop app to use this feature',
+    bingArchiveLimit:'The official archive only keeps the last ~16 days; no images in the selected month',
+    thisMonth:'This month', prevM:'Previous month', nextM:'Next month',
+    months:['January','February','March','April','May','June','July','August','September','October','November','December'],
+    ymFmt:(y,m)=>`${I18N.en.months[m-1]} ${y}`,
     sort:['Top rated','Most rated','Newest','Name A→Z']
   }
 };
@@ -7885,7 +7952,9 @@ function toast(msg){const el=$('toast');el.textContent=msg;el.classList.add('sho
 function renderNav(){
   const nav = $('nav');
   const total = THEMES.length;
-  let html = `<button class="nav-item${state.cat===null?' active':''}" data-cat="">
+  let html = `<button class="nav-item${state.cat==='__bing__'?' active':''}" data-cat="__bing__">
+      <span class="ico">📅</span><span class="nm">${L('bingCat')}</span></button>`;
+  html += `<button class="nav-item${state.cat===null?' active':''}" data-cat="">
       <span class="ico">📚</span><span class="nm">${L('all')}</span><span class="cnt">${total}</span></button>`;
   for(const c of CATS){
     html += `<button class="nav-item${state.cat===c.name?' active':''}" data-cat="${esc(c.name)}">
@@ -7919,6 +7988,7 @@ function currentItems(){
 }
 
 function renderGrid(){
+  if(state.cat==='__bing__'){ renderBing(); return; }
   const list = currentItems();
   const q = state.q.trim();
   const cur = state.cat ? CATS.find(c=>c.name===state.cat) : null;
@@ -7965,6 +8035,125 @@ function renderGrid(){
     el.addEventListener('click',()=>openDetail(Number(el.dataset.id))));
 }
 
+/* ---------- bing ---------- */
+let bingCache = null, bingIdx = 0, bingMonth = null;
+async function pywebviewApi(){
+  if(window.pywebview && window.pywebview.api) return window.pywebview.api;
+  await new Promise(res=>{
+    window.addEventListener('pywebviewready', res, {once:true});
+    setTimeout(res, 2500);
+  });
+  return (window.pywebview||{}).api || null;
+}
+
+const ymOf = d => (d && d.length >= 6) ? `${d.slice(0,4)}-${d.slice(4,6)}` : '';
+const curYM = ()=>{ const n = new Date(); return `${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,'0')}`; };
+const shiftYM = (ym, delta)=>{
+  const [y,m] = ym.split('-').map(Number);
+  const d = new Date(y, m - 1 + delta, 1);
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+};
+const ymLabel = ym=>{ const [y,m] = ym.split('-').map(Number); return L('ymFmt', y, m); };
+const dateText = d => d && d.length===8 ? `${d.slice(0,4)}-${d.slice(4,6)}-${d.slice(6,8)}` : '';
+
+/** 弹出原生文件夹选择框；用户取消时返回 null */
+async function chooseFolder(api){
+  const r = await api.pick_folder();
+  return (r && r.ok) ? r.path : null;
+}
+
+async function renderBing(){
+  $('catTitle').innerHTML = `📅 ${L('bingCat')}`;
+  $('catSub').textContent = L('bingSub');
+  const grid = $('grid');
+  const api = await pywebviewApi();
+  if(!api){
+    grid.innerHTML = `<div class="empty"><div class="e-ico">🖥️</div><p>${L('bingHint')}</p></div>`;
+    return;
+  }
+  if(!bingCache){
+    grid.innerHTML = `<div class="empty"><div class="e-ico">⏳</div><p>${L('loading')}</p></div>`;
+    bingCache = await api.get_bing();
+  }
+  if(!bingCache.ok || !bingCache.images || !bingCache.images.length){
+    grid.innerHTML = `<div class="empty"><div class="e-ico">⚠️</div><p>${L('bingErr')}: ${esc(bingCache.error||'')}</p></div>`;
+    return;
+  }
+  if(!bingMonth) bingMonth = curYM();
+
+  const all = bingCache.images;
+  const imgs = all.filter(im=>ymOf(im.date) === bingMonth);
+  if(bingIdx >= imgs.length) bingIdx = 0;
+
+  const bar = `<div class="bing-bar">
+      <button class="btn nav-arrow" id="bmPrev" title="${esc(L('prevM'))}">❮</button>
+      <input class="month" type="month" id="bmInput" value="${bingMonth}">
+      <button class="btn nav-arrow" id="bmNext" title="${esc(L('nextM'))}">❯</button>
+      <button class="btn" id="bmNow">${L('thisMonth')}</button>
+      <span class="bing-note">${L('bingArchiveLimit')}</span>
+    </div>`;
+
+  if(!imgs.length){
+    grid.innerHTML = bar +
+      `<div class="empty"><div class="e-ico">📅</div><p>${L('bingArchiveLimit')}</p></div>`;
+    bindBingBar();
+    return;
+  }
+
+  const cur = imgs[bingIdx];
+  grid.innerHTML = bar + `
+    <div class="bing-hero">
+      <img id="bingHero" src="${esc(cur.url)}" alt="">
+      <div class="bing-meta">
+        <h3 id="bingTitle">${esc(cur.title||L('today'))}</h3>
+        <p id="bingCopy">${esc(cur.copyright||'')}</p>
+        <p class="bing-date" id="bingDate">${esc(dateText(cur.date))}</p>
+      </div>
+      <div class="bing-actions">
+        <button class="btn" id="bingDl">⬇ ${L('download')}</button>
+        <button class="btn primary" id="bingSet">${L('setWall')}</button>
+      </div>
+    </div>
+    <div class="bing-sec-label">${L('bingPrev')} · ${esc(ymLabel(bingMonth))}</div>
+    <div class="bing-strip" id="bingStrip">
+      ${imgs.map((im,i)=>`<img src="${esc(im.url)}" data-i="${i}" class="${i===bingIdx?'active':''}" alt="" loading="lazy">`).join('')}
+    </div>`;
+  bindBingBar();
+
+  const select = i=>{
+    bingIdx = i;
+    const im = imgs[i];
+    $('bingHero').src = im.url;
+    $('bingTitle').textContent = im.title || L('today');
+    $('bingCopy').textContent = im.copyright || '';
+    $('bingDate').textContent = dateText(im.date);
+    $('bingStrip').querySelectorAll('img').forEach(x=>x.classList.toggle('active', +x.dataset.i===i));
+  };
+  $('bingStrip').querySelectorAll('img').forEach(x=>x.addEventListener('click',()=>select(+x.dataset.i)));
+  $('bingHero').addEventListener('click',()=>showViewer(imgs[bingIdx].url));
+  $('bingDl').onclick = async ()=>{
+    const folder = await chooseFolder(api);
+    if(!folder) return;
+    toast(L('dlStarted'));
+    const r = await api.download_image(imgs[bingIdx].url, '', folder);
+    r.ok ? toast(L('dlDone')+' '+r.path) : toast(L('dlFail')+': '+(r.error||''));
+  };
+  $('bingSet').onclick = async ()=>{
+    const r = await api.set_wallpaper(imgs[bingIdx].url, 'Bing');
+    r.ok ? toast(L('wpDone')) : toast(L('wpFail')+': '+(r.error||''));
+  };
+}
+
+function bindBingBar(){
+  $('bmInput').addEventListener('change',e=>{
+    if(!e.target.value) return;
+    bingMonth = e.target.value; bingIdx = 0; renderBing();
+  });
+  $('bmPrev').addEventListener('click',()=>{ bingMonth = shiftYM(bingMonth,-1); bingIdx=0; renderBing(); });
+  $('bmNext').addEventListener('click',()=>{ bingMonth = shiftYM(bingMonth, 1); bingIdx=0; renderBing(); });
+  $('bmNow').addEventListener('click',()=>{ bingMonth = curYM(); bingIdx=0; renderBing(); });
+}
+
 /* ---------- detail ---------- */
 function openDetail(id){
   const t = byId.get(id); if(!t) return;
@@ -7982,8 +8171,13 @@ function openDetail(id){
     `<span>${esc(priceText(t))}</span>`+
     `<span>${L('released', esc(t['发布日期']))}</span>`;
   $('dBody').innerHTML =
-    (pv[0]?`<img class="d-hero" src="${esc(pv[0])}" alt="">`:'')+
-    (pv.length>1?`<div class="d-sub">${pv.slice(1,9).map(u=>`<img src="${esc(u)}" alt="">`).join('')}</div>`:'')+
+    (pv.length?`<div class="carousel">
+       <div class="car-track" id="dTrack">${pv.map(u=>`<div class="car-slide"><img src="${esc(u)}" alt=""></div>`).join('')}</div>
+       <button class="car-btn l" id="carPrev">❮</button>
+       <button class="car-btn r" id="carNext">❯</button>
+       <span class="car-ind" id="carInd">1 / ${pv.length}</span>
+     </div>`:'')+
+    (pv.length>1?`<div class="d-sub" id="dThumbs">${pv.map((u,i)=>`<img src="${esc(u)}" data-i="${i}" class="${i===0?'active':''}" alt="">`).join('')}</div>`:'')+
     `<p class="d-desc">${esc(descOf(t)||L('noDesc'))}</p>`+
     `<div class="d-info">
        <div class="cell"><b>${L('wallCount')}</b><span>${L('countUnit', pv.length)}</span></div>
@@ -8001,7 +8195,52 @@ function openDetail(id){
   $('dCopy').onclick = ()=>{ navigator.clipboard?.writeText(t['产品ID']||'').then(()=>toast(L('copied', t['产品ID'])),()=>toast(L('copyFail'))); };
   $('scrim').classList.add('open');
   $('dBody').scrollTop = 0;
-  $('dBody').querySelectorAll('img').forEach(img=>img.addEventListener('click',()=>showViewer(img.src)));
+
+  // ---- 轮播：大图左右滚动，缩略图点击定位 ----
+  let carIdx = 0;
+  const track = $('dTrack');
+  const updateCarUI = ()=>{
+    $('carInd').textContent = `${carIdx+1} / ${pv.length}`;
+    $('dThumbs')?.querySelectorAll('img').forEach(im=>
+      im.classList.toggle('active', +im.dataset.i===carIdx));
+  };
+  const goCar = i=>{
+    carIdx = (i + pv.length) % pv.length;
+    track.scrollTo({left: carIdx * track.clientWidth, behavior:'smooth'});
+    updateCarUI();
+  };
+  if(track){
+    track.addEventListener('scroll',()=>{
+      const i = Math.round(track.scrollLeft / Math.max(1, track.clientWidth));
+      if(i!==carIdx && i>=0 && i<pv.length){ carIdx=i; updateCarUI(); }
+    },{passive:true});
+    $('carPrev').addEventListener('click',()=>goCar(carIdx-1));
+    $('carNext').addEventListener('click',()=>goCar(carIdx+1));
+    track.querySelectorAll('.car-slide img').forEach(im=>im.addEventListener('click',()=>showViewer(im.src)));
+  }
+  $('dThumbs')?.querySelectorAll('img').forEach(im=>
+    im.addEventListener('click',()=>goCar(+im.dataset.i)));
+
+  // ---- 下载全部 / 设置当前图为桌面背景 ----
+  $('dDlAll').textContent = L('downloadAll');
+  $('dSetWall').textContent = L('setCurrent');
+  $('dDlAll').onclick = async ()=>{
+    if(!pv.length) return;
+    const api = await pywebviewApi();
+    if(!api){ toast(L('bingHint')); return; }
+    const folder = await chooseFolder(api);
+    if(!folder) return;
+    toast(L('dlStarted'));
+    const r = await api.download_all(pv, t['名称'], folder);
+    r.ok ? toast(`${L('dlDone')} (${(r.saved||[]).length})`) : toast(L('dlFail')+': '+((r.errors||[])[0]||''));
+  };
+  $('dSetWall').onclick = async ()=>{
+    if(!pv.length) return;
+    const api = await pywebviewApi();
+    if(!api){ toast(L('bingHint')); return; }
+    const r = await api.set_wallpaper(pv[carIdx], t['名称']);
+    r.ok ? toast(L('wpDone')) : toast(L('wpFail')+': '+(r.error||''));
+  };
 }
 function closeDetail(){$('scrim').classList.remove('open');}
 function showViewer(src){$('viewerImg').src=src;$('viewer').classList.add('open');}
