@@ -203,6 +203,11 @@ html[data-theme="dark"] .btn.primary:hover{background:#35b2f0}
 .empty{grid-column:1/-1;display:flex;flex-direction:column;align-items:center;gap:12px;padding:80px 20px;color:var(--text-3)}
 .empty .e-ico{font-size:44px}
 .empty p{font-size:13.5px}
+.empty .ms-badge{display:inline-flex;align-items:center;padding:8px 14px;margin-top:2px;
+  background:#0b1220;border:1px solid #2a3242;border-radius:8px;line-height:0;
+  transition:transform .15s,box-shadow .15s}
+.empty .ms-badge:hover{transform:translateY(-1px);box-shadow:0 6px 16px rgba(0,0,0,.35)}
+.empty .ms-badge img{height:38px;display:block}
 
 /* ---------- Modal ---------- */
 .scrim{
@@ -7901,7 +7906,8 @@ const I18N = {
     loading:'加载中…', download:'下载', setWall:'设置为桌面背景', downloadAll:'下载全部图片',
     setCurrent:'设置当前图片为桌面背景', dlStarted:'开始下载…', dlDone:'已保存到', dlFail:'下载失败',
     wpDone:'已设置为桌面背景', wpFail:'设置桌面背景失败', bingErr:'无法获取 Bing 每日图片',
-    bingHint:'请在桌面应用中打开以使用此功能',
+    bingHint:'Bing 每日图片与设置桌面背景需在桌面应用中使用，请先获取应用：',
+    bingGetApp:'在 Microsoft Store 获取 Windows 主题库',
     bingArchiveLimit:'官方存档仅保留最近约 16 天，所选月份暂无图片',
     thisMonth:'本月', prevM:'上一月', nextM:'下一月',
     ymFmt:(y,m)=>`${y} 年 ${m} 月`,
@@ -7924,7 +7930,8 @@ const I18N = {
     loading:'Loading…', download:'Download', setWall:'Set as desktop background', downloadAll:'Download all images',
     setCurrent:'Set current image as background', dlStarted:'Downloading…', dlDone:'Saved to', dlFail:'Download failed',
     wpDone:'Wallpaper set', wpFail:'Failed to set wallpaper', bingErr:'Failed to load Bing daily images',
-    bingHint:'Open this in the desktop app to use this feature',
+    bingHint:'Bing daily images and wallpaper setting require the desktop app. Get the app from Microsoft Store:',
+    bingGetApp:'Get Windows Themes from Microsoft Store',
     bingArchiveLimit:'The official archive only keeps the last ~16 days; no images in the selected month',
     thisMonth:'This month', prevM:'Previous month', nextM:'Next month',
     months:['January','February','March','April','May','June','July','August','September','October','November','December'],
@@ -8068,7 +8075,14 @@ async function renderBing(){
   const grid = $('grid');
   const api = await pywebviewApi();
   if(!api){
-    grid.innerHTML = `<div class="empty"><div class="e-ico">🖥️</div><p>${L('bingHint')}</p></div>`;
+    // 纯网页环境：引导用户跳转 Microsoft Store 安装桌面应用
+    grid.innerHTML = `<div class="empty">
+        <div class="e-ico">🖥️</div>
+        <p>${L('bingHint')}</p>
+        <a class="ms-badge" href="ms-windows-store://pdp/?ProductId=9PJJC37WP4NJ" title="${esc(L('bingGetApp'))}">
+          <img src="https://get.microsoft.com/images/en-us%20dark.svg" alt="${esc(L('bingGetApp'))}">
+        </a>
+      </div>`;
     return;
   }
   if(!bingCache){
