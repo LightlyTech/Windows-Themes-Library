@@ -2,7 +2,7 @@
 
 用于浏览、搜索和查看规划中的 Windows 桌面主题库。它包含多个按类别整理的内置主题，并支持在浅色和深色主题之间切换。
 
-[![从 Microsoft 获取](https://get.microsoft.com/images/en-us%20dark.svg)](https://apps.microsoft.com/detail/9p8rw37p589d)
+[![从 Microsoft 获取](https://get.microsoft.com/images/en-us%20dark.svg)](https://apps.microsoft.com/detail/9PJJC37WP4NJ)
 
 [在线体验](https://lightlytech.github.io/UI-Designer-for-AI-Prompt-Generation/)
 
