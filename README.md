@@ -5,7 +5,7 @@ Used to browse, search and view the planned Windows desktop theme library. It in
 
 [![Get From Microsoft](https://get.microsoft.com/images/en-us%20dark.svg)](https://apps.microsoft.com/detail/9p8rw37p589d)
 
-[Online experience](https://lightlytech.github.io/UI-Designer-for-AI-Prompt-Generation/)
+[Online experience](https://lightlytech.github.io/Windows-Themes-Library/)
 
 ![Image](1.png)
 
